@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    main {
+        flex: 2;
+        .result-data {
+            color: #111;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 20px;
+            line-height: 25px;
+            margin: 0 0 25px;
+            text-align: center;
+        }
+    
+        .error-msg {
+            color: red;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 20px;
+            line-height: 25px;
+            margin: 0 0 25px;
+            text-align: center;
+        }
+    }
+    
+    section {
+        max-width: 800px;
+        margin: 50px auto;
+    }
+}
+
+

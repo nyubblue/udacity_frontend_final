@@ -1,21 +1,94 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title>Test</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles/resets.css">
-        <link rel="stylesheet" href="/styles/base.css">
-        <link rel="stylesheet" href="/styles/header.css">
-        <link rel="stylesheet" href="/styles/form.css">
-        <link rel="stylesheet" href="/styles/footer.css">
-    </head>
 
-    <body>
-        <div class="container">
-            <div class="insta">
-                <div class="insta-inner"></div>
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/base.css">
+    <script src="https://kit.fontawesome.com/1dc9f7e55c.js" crossorigin="anonymous"></script>
+</head>
+
+<body onload="return Client.init()">
+    <div class="container">
+        <header class="header">
+            <div class="logo"><span class="fa-solid fa-dog"></span></div>
+            <div>
+                <ul class="menu-lst">
+                    <li class="menu-item">Home page</li>
+                    <li class="menu-item" id="add-trip"><i class="fa-solid fa-plus fa-plus-add"></i> Add Trip</li>
+                </ul>
             </div>
-        </div>
-    </body>
+        </header>
+        <section class="main">
+            <div class="title">
+                <h3>My Trips</h3>
+            </div>
+            <div class="trip-list" id="trip-list">
+            </div>
+        </section>
+        <footer class="footer">
+            <div class="footer-txt">
+                <h4>Let’s go! The whole world awaits ...</h4>
+            </div>
+        </footer>
+        <!-- The add trip Modal -->
+        <section id="addTripModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form>
+                    <div class="form-input">
+
+                        <div>
+                            <label for="locationName">My trip to:</label>
+                            <input type="text" id="locationName" name="locationName" placeholder="Enter Place Name"
+                                class="form-txt" />
+                        </div>
+                        <div>
+                            <label for="tripDate">Departing:</label>
+                            <input type="text" id="tripDate" name="tripDate" placeholder="YYYY/MM/DD"
+                                class="form-txt" />
+                        </div>
+                        <div class="btnsub-area">
+                            <input type="submit" class="btnsub" value="Submit"
+                                onclick="return Client.handleSubmit(event)">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+    </div>
+    <script>
+        const addTripBtn = document.getElementById("add-trip");
+        const addTripModal = document.getElementById("addTripModal");
+        const clsModal = document.getElementsByClassName("close")[0];
+
+        addTripBtn.addEventListener("click", addTripAction);
+        clsModal.addEventListener("click", closeModal);
+
+        function addTripAction(e) {
+            e.preventDefault();
+            addTripModal.style.display = "block";
+
+        }
+
+        function closeModal(e) {
+            addTripModal.style.display = "none";
+        }
+    </script>
+    <!-- <script>
+            // Check that service workers are supported
+            if ('serviceWorker' in navigator) {
+                // Use the window load event to keep the page load performant
+                 window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
+    </script> -->
+</body>
+
 </html>

@@ -1,22 +1,36 @@
 import { postData } from "./connectUtil"
-import { checkForName } from "./nameChecker"
 import { updateUI } from "./updateResult"
+import { validatePlace, validateTripDate } from "./validate";
 
 function handleSubmit(event) {
     event.preventDefault()
 
     // check what text was put into the form field
-    let formText = document.getElementById('name').value
-    if (!checkForName(formText)) {
-        alert("Input is not empty!");
+    let placeTxt = document.getElementById('locationName').value;
+    let tripDate = document.getElementById('tripDate').value;
+
+    const valPlace = validatePlace(placeTxt);
+    if (valPlace.code > 0) {
+        document.getElementById('locationName').focus();
+        alert(valPlace.msg);
         return false;
     }
 
-    postData('http://localhost' + ':8081/sentiment', { txt: formText })
+    const valTrip = validateTripDate(tripDate);
+    if (valTrip.code > 0) {
+        document.getElementById('tripDate').focus();
+        alert(valTrip.msg);
+        return false;
+    }
+
+    //convert format date
+    tripDate = tripDate.replaceAll('/', '-');
+
+    console.log("start call api");
+    //call api for building item data
+    postData('http://localhost:8081/api', { placeName: placeTxt, tripDate: tripDate })
         .then(function (res) {
-            //console.log("::: Form Submitted Return OK::: " + res.status.code + res)
-            document.getElementById('results').innerHTML = "";
-            document.getElementById('results').appendChild(updateUI(res));
+            document.getElementById('trip-list').appendChild(updateUI(res, false));
         })
 }
 

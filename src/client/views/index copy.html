@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Test</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/styles/base.css">
+        <script src="https://kit.fontawesome.com/1dc9f7e55c.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <header class="header">
+                <div class="logo"><span class="fa-solid fa-dog"></span></div>
+                <div>
+                    <ul class="menu-lst">
+                        <li class="menu-item">Home page</li>
+                        <li class="menu-item" id="add-trip"><i class="fa-solid fa-plus fa-plus-add"></i> Add Trip</li>
+                    </ul>
+                </div>
+            </header>
+            <section class="main">
+                <div class="title">
+                    <h3>My Trips</h3>
+                </div>
+                <div class="trip-list" id="trip-list">
+                    <div class="trip-item">
+                        <figure class="img-item">
+                            <img class="img" src="img/img.png" alt="Trulli" />
+                        </figure>
+                        <div class="content">
+                            <div class="trip-head">
+                                <h4>My trip to: Paris, France</h4>
+                            </div>
+                            <div class="btn-area">
+                                <button class="btn s bg-lightp">save trip</button>
+                                <button class="btn s bg-lightp">remove trip</button>
+                            </div>
+                            <div class="detail">
+                                <p>Paris, France is <mark>220 days</mark> away</p>
+                                <br>
+                                <div class="dt-more">
+                                    <p>Typical weather for then is : </p>
+                                    <p>High - 46, Low - 35</p>
+                                    <p>Mostly cloudy throughout the day</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trip-item">
+                        <figure class="img-item">
+                            <img class="img" src="img/img.png" alt="Trulli" />
+                        </figure>
+                        <div class="content">
+                            <div class="trip-head">
+                                <h4>My trip to: Paris, France</h4>
+                            </div>
+                            <div class="btn-area">
+                                <button class="btn s bg-lightp">save trip</button>
+                                <button class="btn s bg-lightp">remove trip</button>
+                            </div>
+                            <div class="detail">
+                                <p>Paris, France is <mark>220 days</mark> away</p>
+                                <br>
+                                <div class="dt-more">
+                                    <p>Typical weather for then is : </p>
+                                    <p>High - 46, Low - 35</p>
+                                    <p>Mostly cloudy throughout the day</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="trip-item">
+                        <figure class="img-item">
+                            <img class="img" src="img/img.png" alt="Trulli" />
+                        </figure>
+                        <div class="content">
+                            <div class="trip-head">
+                                <h4>My trip to: Paris, France</h4>
+                            </div>
+                            <div class="btn-area">
+                                <button class="btn s bg-lightp">save trip</button>
+                                <button class="btn s bg-lightp">remove trip</button>
+                            </div>
+                            <div class="detail">
+                                <p>Paris, France is <mark>220 days</mark> away</p>
+                                <br>
+                                <div class="dt-more">
+                                    <p>Typical weather for then is : </p>
+                                    <p>High - 46, Low - 35</p>
+                                    <p>Mostly cloudy throughout the day</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="footer">
+                <div class="footer-txt">
+                    <h4>Let’s go! The whole world awaits ...</h4>
+                </div>
+            </footer>
+            <!-- The add trip Modal -->
+            <section id="addTripModal" class="modal">
+    
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form>
+                        <div class="form-input">
+                
+                            <div>
+                                <label for="locationName">My trip to:</label>
+                                <input type="text" id="locationName" name="locationName" placeholder="Enter Place Name" class="form-txt" />
+                            </div>
+                            <div>
+                                <label for="tripDate">Departing:</label>
+                                <input type="text" id="tripDate" name="tripDate" placeholder="MM/DD/YYYY" class="form-txt" />
+                            </div>
+                            <div class="btnsub-area">
+                                <input type="submit" class="btnsub" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+    
+            </section>
+    
+        </div>
+        <script>
+const addTripBtn = document.getElementById("add-trip");
+const addTripModal = document.getElementById("addTripModal");
+const clsModal = document.getElementsByClassName("close")[0];
+
+addTripBtn.addEventListener("click", addTripAction);
+clsModal.addEventListener("click", closeModal);
+
+function addTripAction(e) {
+    e.preventDefault();
+    addTripModal.style.display = "block";
+}
+
+function closeModal(e) {
+    addTripModal.style.display = "none";
+}
+        </script>
+    </body>
+</html>

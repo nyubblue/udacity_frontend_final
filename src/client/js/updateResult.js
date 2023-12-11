@@ -1,38 +1,63 @@
 /* update UI */
-const updateUI = (newData) => {
-
+const updateUI = (newData, isInit) => {
     const frameData = document.createDocumentFragment();
-    if (newData.status && newData.status.code == "0") {
-        let divAgree = document.createElement('div');
-        divAgree.textContent = `Agreement: ${newData.agreement.toLowerCase()}`;
-        divAgree.classList.add('result-data');
-        divAgree.id = 'agreement';
-        frameData.appendChild(divAgree);
 
-        let divconfidence = document.createElement('div');
-        divconfidence.textContent = `Confidence: ${newData.confidence}%`;
-        divconfidence.classList.add('result-data');
-        frameData.appendChild(divconfidence);
+    if(newData.statusCode == 0) {
+        let tripItem = document.createElement('div');
+        tripItem.classList.add('trip-item');
+        let figure = document.createElement('figure');
+        figure.classList.add('img-item');
+        let imgItem = document.createElement('img');
+        imgItem.classList.add('img');
+        imgItem.setAttribute('src', newData.imageURL);
+        imgItem.setAttribute('alt', `${newData.geonames.name}, ${newData.geonames.country}`);
+        figure.appendChild(imgItem);
+        tripItem.appendChild(figure);
 
-        let divsubj = document.createElement('div');
-        divsubj.textContent = `Subjectivity: ${newData.subjectivity.toLowerCase()}`;
-        divsubj.classList.add('result-data');
-        frameData.appendChild(divsubj);
+        let content = document.createElement('div');
+        content.classList.add('content');
+        let tripHead = document.createElement('div');
+        tripHead.classList.add('trip-head');
+        let tripCont = document.createElement('h4');
+        tripCont.textContent = `My trip to: ${newData.geonames.name}, ${newData.geonames.country}`;
+        tripHead.appendChild(tripCont);
+        content.appendChild(tripHead);
+        let areaBtn = document.createElement('div');
+        content.classList.add('btn-area');
+        let btn1 = document.createElement('button');
+        btn1.classList.add('btn')
+        btn1.classList.add('s');
+        btn1.classList.add('bg-lightp');
+        btn1.textContent = 'remove trip';
+        areaBtn.appendChild(btn1);
+        content.appendChild(areaBtn);
+        let detail = document.createElement('div');
+        detail.classList.add('detail');
+        let headD = document.createElement('p');
+        headD.innerHTML = `${newData.geonames.name}, ${newData.geonames.country} is <mark>220 days</mark> away`;
+        detail.appendChild(headD);
+        let br = document.createElement('br');
+        detail.appendChild(br);
+        let dtMore = document.createElement('div');
+        dtMore.classList.add('dt-more');
+        dtMore.innerHTML = `<p>Temperature : ${newData.weData.temp}</p><p>${newData.weData.description}</p>`;
+        detail.appendChild(dtMore);
+        content.appendChild(detail);
+        tripItem.appendChild(content);
+        frameData.appendChild(tripItem);
 
-        let divScore = document.createElement('div');
-        divScore.textContent = `Sentiment: ${newData.score_tag}`;
-        divScore.classList.add('result-data');
-        frameData.appendChild(divScore);
-    } else {
-        const divErr = document.createElement("div");
-        if (!newData.status || newData.status && newData.status.msg == undefined) {
-            divErr.textContent = `A error is happened~`;
-        } else {
-            divErr.textContent = `${newData.status.msg}`;
+        //If not init screen, process for localStorage
+        if (!isInit) {
+            let appDataList = localStorage.getItem('appDataList');
+            if (!localStorage.getItem('appDataList')) {
+                appDataList = [];
+            } else {
+                appDataList = JSON.parse(appDataList)
+            }
+
+            appDataList.push(newData);
+            localStorage.setItem('appDataList', JSON.stringify(appDataList))
         }
-        divErr.id = 'agreement';
-        divErr.classList.add("error-msg");
-        frameData.appendChild(divErr);
     }
     return frameData;
 };

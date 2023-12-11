@@ -1,19 +1,19 @@
-var path = require('path')
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
 //configure env variables
 const dotenv = require('dotenv');
-const connectSentimentAPI = require('./func');
+const { GEONAMES_API_URL, PIXABAY_BASE_URL, WEATHER_BIT_API_BASE_URL } = require('./constants');
+const { callOpenApi, getDataFromPlace, getWeDataFromGeonames, getPixePhoto } = require('./func');
 dotenv.config();
 
-const baseURL = 'https://api.meaningcloud.com/sentiment-2.1?key=';
-const apiKey = process.env.API_KEY
-const selectAdd = "&txt=";
-const lang = "&lang=en";
+const WEATHER_BIT_API_KEY = process.env.WEATHER_BIT_API_KEY;
+const PIXABAY_API_KEY = process.env.PIXABAY_API_KEY;
 
-var projectData = {};
+let projectData = {};
+let dataList = [];
 
 const app = express()
 app.use(cors())
@@ -28,22 +28,85 @@ app.use(express.static('dist'))
 console.log(__dirname)
 
 app.get('/', function (req, res) {
-    res.sendFile('dist/index.html')
+    res.sendFile('dist/index.html');
 })
 
-app.post('/sentiment', callApiAylien);
+app.get('/getAllData', function (req, res) {
+    if (dataList.length != 0) {
+        res.send({code: 200, data: dataList});
+    } else {
+        res.send({code: 200, err: 'No data'});
+    }
+})
 
-function callApiAylien(req, res) {
-    let dataTxt = req.body.txt;
-    connectSentimentAPI(baseURL, apiKey, selectAdd, dataTxt, lang)
-        .then(function (data) {
-            projectData = data;
-            res.send(projectData);
-        })
-}
+app.post('/api', function (req, res) {
+    const placeName = req.body.placeName;
+    const tripDate = req.body.tripDate;
+    projectData = {};
+
+    try {
+        //Call api get long, lat
+        console.log(`GEO: ${GEONAMES_API_URL}&q=${placeName}`)
+        callOpenApi(`${GEONAMES_API_URL}&q=${placeName}`)
+            .then((data) => {
+                projectData.geonames = getDataFromPlace(data);
+                console.log(projectData);
+                if (projectData.geonames != null) {
+                    //Call api get weather with date
+                    console.log(`Weather: ${WEATHER_BIT_API_BASE_URL}?lat=${projectData.geonames.lat}&lon=${projectData.geonames.long}&key=${WEATHER_BIT_API_KEY}&days=16`);
+                    callOpenApi(`${WEATHER_BIT_API_BASE_URL}?lat=${projectData.geonames.lat}&lon=${projectData.geonames.long}&key=${WEATHER_BIT_API_KEY}&days=16`)
+                        .then((weData) => {
+                            projectData.weData = getWeDataFromGeonames(weData, tripDate);
+                            if (projectData.weData == null) {
+                                res.send({ statusCode: 1, msg: "no data" });
+                            } else {
+                                //Call api get image of place
+                                let p = encodeURIComponent(projectData.geonames.name);
+                                console.log(`Img: ${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`);
+                                callOpenApi(`${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`)
+                                    .then((photos) => {
+                                        let photo = getPixePhoto(photos);
+                                        projectData.statusCode = "0"
+                                        if (photo != null) {
+                                            projectData.imageURL = photo;
+                                            projectData.id = Number(new Date()).toString(36);
+                                            dataList.push(projectData);
+                                            console.log(projectData);
+                                            res.send(projectData);
+                                        } else {
+                                            // If name is not found any image, change p for country info
+                                            p = encodeURIComponent(projectData.geonames.country);
+                                            console.log(`Img Again: ${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`)
+                                            callOpenApi(`${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`)
+                                                .then((photos1) => {
+                                                    photo = getPixePhoto(photos1);
+                                                    if (photo != null) {
+                                                        projectData.imageURL = photo;
+                                                    } else {
+                                                        //Set default img
+                                                        projectData.imageURL = './img/default.jpg';
+                                                    }
+                                                    projectData.id = Number(new Date()).toString(36);
+                                                    dataList.push(projectData);
+                                                    console.log(projectData);
+                                                    res.send(projectData);
+                                                });
+                                        }
+                                    });
+                            }
+
+                        });
+                } else {
+                    res.send({ statusCode: 1, msg: "no data" });
+                }
+            });
+    } catch (error) {
+        res.send({ statusCode: 2, error: error });
+    }
+})
 
 // designates what port the app will listen to for incoming requests
 app.listen(8081, function () {
-    console.log('Example app listening on port 8081!')
+    console.log('Example app listening on port 8081! OK')
 })
 

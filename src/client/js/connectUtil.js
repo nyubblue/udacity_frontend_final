@@ -16,4 +16,15 @@ const postData = async (url = '', data = {}) => {
     }
 }
 
-export { postData }
+//call OpenApi (GET)
+const callOpenApi = async fullUrl => {
+    const response = await fetch(fullUrl)
+    try {
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.log('error', error)
+    }
+  }
+
+export { postData, callOpenApi }

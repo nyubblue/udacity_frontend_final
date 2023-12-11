@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/1dc9f7e55c.js" crossorigin="anonymous"></script>
 </head>
 
-<body onload="return Client.init()">
+<body >
     <div class="container">
         <header class="header">
             <div class="logo"><span class="fa-solid fa-dog"></span></div>
@@ -73,14 +73,15 @@
         function addTripAction(e) {
             e.preventDefault();
             addTripModal.style.display = "block";
-
         }
 
         function closeModal(e) {
             addTripModal.style.display = "none";
+            document.getElementById('locationName').value = '';
+            document.getElementById('tripDate').value = '';
         }
     </script>
-    <!-- <script>
+    <script>
             // Check that service workers are supported
             if ('serviceWorker' in navigator) {
                 // Use the window load event to keep the page load performant
@@ -88,7 +89,7 @@
                 navigator.serviceWorker.register('/service-worker.js');
             });
         }
-    </script> -->
+    </script>
 </body>
 
 </html>

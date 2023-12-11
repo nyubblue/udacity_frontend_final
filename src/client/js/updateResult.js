@@ -1,10 +1,13 @@
+import { getDiffCurrentDay } from "./utils";
+
 /* update UI */
 const updateUI = (newData, isInit) => {
     const frameData = document.createDocumentFragment();
 
-    if(newData.statusCode == 0) {
+    if (newData.statusCode == 0) {
         let tripItem = document.createElement('div');
         tripItem.classList.add('trip-item');
+        tripItem.id = newData.id;
         let figure = document.createElement('figure');
         figure.classList.add('img-item');
         let imgItem = document.createElement('img');
@@ -29,12 +32,14 @@ const updateUI = (newData, isInit) => {
         btn1.classList.add('s');
         btn1.classList.add('bg-lightp');
         btn1.textContent = 'remove trip';
+        btn1.setAttribute('onclick', `return Client.deleteTrip('${newData.id}')`)
         areaBtn.appendChild(btn1);
         content.appendChild(areaBtn);
         let detail = document.createElement('div');
         detail.classList.add('detail');
         let headD = document.createElement('p');
-        headD.innerHTML = `${newData.geonames.name}, ${newData.geonames.country} is <mark>220 days</mark> away`;
+        let diffDays = getDiffCurrentDay(newData.date);
+        headD.innerHTML = `${newData.geonames.name}, ${newData.geonames.country} is <em>${diffDays} days</em> away`;
         detail.appendChild(headD);
         let br = document.createElement('br');
         detail.appendChild(br);

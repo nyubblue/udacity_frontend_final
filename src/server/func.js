@@ -1,6 +1,7 @@
+const { default: fetch } = require("node-fetch");
+
 /* call the API */
 const connectSentimentAPI = async (baseUrl, apiKey, jsonSelector, textInput, lang) => {
-  const fetch = require('node-fetch');
   const res = await fetch(baseUrl + apiKey + jsonSelector + textInput + lang)
   try {
     const data = await res.json();
@@ -16,10 +17,10 @@ const connectSentimentAPI = async (baseUrl, apiKey, jsonSelector, textInput, lan
 const callOpenApi = async fullUrl => {
   const response = await fetch(fullUrl)
   try {
-      const data = await response.json()
-      return data
+    const data = await response.json()
+    return data
   } catch (error) {
-      console.log('error', error)
+    console.log('error', error)
   }
 }
 
@@ -28,14 +29,14 @@ async function procAs(data, placeName, url) {
   data = await promiseData;
 }
 
-const getDataFromPlace = function(data){
+const getDataFromPlace = function (data) {
   let returndata = null;
-      if(data != null && data != undefined) {
-        const geonames = data.geonames;
-        if(data.totalResultsCount != 0 && geonames != undefined && geonames.length != 0) {
-          returndata = {lat: geonames[0].lat, long: geonames[0].lng, country: geonames[0].countryName, name: geonames[0].name};
-        }
-      }
+  if (data != null && data != undefined) {
+    const geonames = data.geonames;
+    if (data.totalResultsCount != 0 && geonames != undefined && geonames.length != 0) {
+      returndata = { lat: geonames[0].lat, long: geonames[0].lng, country: geonames[0].countryName, name: geonames[0].name };
+    }
+  }
   return returndata;
 }
 
@@ -60,12 +61,14 @@ const getWeDataFromGeonames = function (data, date) {
   return returndata;
 }
 
-const getPixePhoto = function(photos) {
+const getPixePhoto = function (photos) {
   let returndata = null;
-  if(photos && Object.keys(photos).length != 0 && photos.total > 0) {
-    returndata = photos.hits[0].webformatURL;
+  if (photos && Object.keys(photos).length != 0 && photos.totalHits > 0) {
+    let last = photos.hits.length - 1;
+    let indexRandom = Math.floor(Math.random() * (last + 1));
+    returndata = photos.hits[indexRandom].webformatURL;
   }
-return returndata;
+  return returndata;
 }
 
 module.exports = {

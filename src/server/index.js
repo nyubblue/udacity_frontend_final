@@ -33,9 +33,9 @@ app.get('/', function (req, res) {
 
 app.get('/getAllData', function (req, res) {
     if (dataList.length != 0) {
-        res.send({code: 200, data: dataList});
+        res.send({ code: 200, data: dataList });
     } else {
-        res.send({code: 200, err: 'No data'});
+        res.send({ code: 200, err: 'No data' });
     }
 })
 
@@ -43,6 +43,18 @@ app.post('/api', function (req, res) {
     const placeName = req.body.placeName;
     const tripDate = req.body.tripDate;
     projectData = {};
+    projectData.place = placeName;
+    let slashTripDate = tripDate;
+    slashTripDate = slashTripDate.replaceAll('-', '/');
+    projectData.date = slashTripDate;
+    let dataFilter = dataList.filter((item) => {
+        return item.date == slashTripDate && item.place == placeName;
+    });
+
+    if (dataFilter.length != 0) {
+        res.send({ statusCode: 22, msg: "Data is existed in App." });
+        return;
+    }
 
     try {
         //Call api get long, lat
@@ -62,8 +74,8 @@ app.post('/api', function (req, res) {
                             } else {
                                 //Call api get image of place
                                 let p = encodeURIComponent(projectData.geonames.name);
-                                console.log(`Img: ${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`);
-                                callOpenApi(`${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo`)
+                                console.log(`Img: ${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo&category=places`);
+                                callOpenApi(`${PIXABAY_BASE_URL}?key=${PIXABAY_API_KEY}&p=${p}&min_width=500&min_height=500&image_type=photo&category=places`)
                                     .then((photos) => {
                                         let photo = getPixePhoto(photos);
                                         projectData.statusCode = "0"
@@ -95,6 +107,9 @@ app.post('/api', function (req, res) {
                                     });
                             }
 
+                        }).catch((error) => {
+                            console.log('Error connect to external api');
+                            res.send({ statusCode: 23, msg: "Error connect to external api" });
                         });
                 } else {
                     res.send({ statusCode: 1, msg: "no data" });
@@ -102,6 +117,23 @@ app.post('/api', function (req, res) {
             });
     } catch (error) {
         res.send({ statusCode: 2, error: error });
+    }
+})
+
+//delete a element of trip item by id
+app.get('/deleteTrip', function (req, res) {
+    let id = req.query.id;
+    try {
+        if (dataList.length != 0) {
+            dataList = dataList.filter((item) => {
+                return item.id != id;
+            });
+            res.send({ code: 0, msg: "Deleting is successfully." });
+        } else {
+            res.send({ code: 9, msg: 'Trips list is empty' });
+        }
+    } catch (error) {
+        res.send({ code: 500, msg: 'internal error' });
     }
 })
 

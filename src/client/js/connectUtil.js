@@ -25,6 +25,6 @@ const callOpenApi = async fullUrl => {
     } catch (error) {
         console.log('error', error)
     }
-  }
+}
 
 export { postData, callOpenApi }

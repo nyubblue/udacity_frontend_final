@@ -1,5 +1,5 @@
 // import { checkForName } from './js/nameChecker'
-import { handleSubmit } from './js/formHandler'
+import { deleteTrip, handleSubmit } from './js/formHandler'
 import { init } from './js/init'
 
 // import './styles/resets.scss'
@@ -9,5 +9,5 @@ import './styles/base.scss'
 // import './styles/header.scss'
 
 export {
-    handleSubmit, init
+    handleSubmit, init, deleteTrip
 }

@@ -1,6 +1,7 @@
-import { callOpenApi, postData } from "./connectUtil"
-import { updateUI } from "./updateResult"
-import { validatePlace, validateTripDate } from "./validate";
+import { callOpenApi, postData } from "./utils/connectUtil"
+import { init } from "./weather/init";
+import { updateUI } from "./weather/updateResult"
+import { validatePlace, validateTripDate } from "./weather/validate";
 
 function handleSubmit(event) {
     event.preventDefault()
@@ -70,4 +71,54 @@ function deleteTrip(id) {
         });
 }
 
-export { handleSubmit, deleteTrip }
+function addPlan(e) {
+    const id = document.getElementById('idRef').value;
+    const endDate = encodeURIComponent(document.getElementById('endDate').value);
+    const tripItem = document.getElementById(id);
+    const valTrip = validateTripDate(document.getElementById('endDate').value, tripItem.dataset.startDate);
+    if (valTrip.code > 0) {
+        document.getElementById('tripDate').focus();
+        alert(valTrip.msg);
+        return false;
+    }
+    callOpenApi(`http://localhost:8081/addPlanDate?id=${id}&endDate=${endDate}`)
+        .then((data) => {
+            if (data.code == 0) {
+                let appDataReloadList = data.data;
+                localStorage.setItem('appDataList', JSON.stringify(appDataReloadList))
+                appDataReloadList.forEach((item) => {
+                    document.getElementById('trip-list').append(updateUI(item, true));
+                });
+
+            } else {
+                addTripModal.style.display = 'none'
+                document.getElementById('endDate').value = ''
+                alert(data.msg);
+            }
+        })
+        .catch((err) => {
+            alert("Bad Request.");
+        });
+}
+
+function addPlanClick(id, startDate) {
+    document.getElementById('idRef').value = id;
+    displayPopupForm('plan');
+    addTripModal.style.display = 'block'
+}
+
+function displayPopupForm(mode) {
+    let groupInputDivs = addTripModal.querySelector('.form-input').children
+    Array.from(groupInputDivs).forEach(function (elem) {
+        // for button add-trip
+        if (mode == elem.dataset.mode) {
+            elem.style.display = 'block'
+        } else if (mode == elem.dataset.mode) {
+            elem.style.display = 'block'
+        } else {
+            elem.style.display = 'none'
+        }
+    })
+}
+
+export { handleSubmit, deleteTrip, init, addPlan, addPlanClick, displayPopupForm }

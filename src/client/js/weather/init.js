@@ -1,4 +1,4 @@
-import { callOpenApi } from "./connectUtil";
+import { callOpenApi } from "../utils/connectUtil";
 import { updateUI } from "./updateResult";
 
 function init() {
@@ -13,17 +13,6 @@ function init() {
                         document.getElementById('trip-list').appendChild(updateUI(item, true));
                     });
                 }
-                //  else {    
-                //     let appDataList = localStorage.getItem('appDataList');
-                //     if (localStorage.getItem('appDataList')) {
-                //         appDataList = JSON.parse(appDataList);
-                //         if (appDataList.length != 0) {
-                //             appDataList.forEach((item) => {
-                //                 document.getElementById('trip-list').appendChild(updateUI(item, true));
-                //             });
-                //         }
-                //     }
-                // }
             }).catch((e) => {
                 let appDataList = localStorage.getItem('appDataList');
                 if (localStorage.getItem('appDataList')) {

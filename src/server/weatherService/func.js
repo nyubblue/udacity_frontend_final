@@ -1,34 +1,5 @@
 const { default: fetch } = require("node-fetch");
 
-/* call the API */
-const connectSentimentAPI = async (baseUrl, apiKey, jsonSelector, textInput, lang) => {
-  const res = await fetch(baseUrl + apiKey + jsonSelector + textInput + lang)
-  try {
-    const data = await res.json();
-    console.log("Data received from the server: ")
-    console.log(data)
-    return data;
-  } catch (error) {
-    console.log("Error: ", error);
-  }
-}
-
-//call OpenApi (GET)
-const callOpenApi = async fullUrl => {
-  const response = await fetch(fullUrl)
-  try {
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.log('error', error)
-  }
-}
-
-async function procAs(data, placeName, url) {
-  let promiseData = callOpenApi(`${url}&q=${placeName}`);
-  data = await promiseData;
-}
-
 const getDataFromPlace = function (data) {
   let returndata = null;
   if (data != null && data != undefined) {
@@ -72,8 +43,6 @@ const getPixePhoto = function (photos) {
 }
 
 module.exports = {
-  connectSentimentAPI,
-  callOpenApi,
   getDataFromPlace,
   getWeDataFromGeonames,
   getPixePhoto

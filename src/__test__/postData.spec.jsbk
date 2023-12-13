@@ -1,0 +1,14 @@
+
+const inputArr = [{ placeName: 'da nang', tripDate: '2023/12/13' }];
+import fetch from 'node-fetch';
+import { postData } from '../client/js/utils/connectUtil';
+global.fetch = fetch;
+
+describe("Call API function (Normal)", () => {
+    test(`Input : ${JSON.stringify(inputArr[0])}`, () => {
+        return postData('http://localhost:8081/api', inputArr[0])
+            .then(data => {
+                expect(data).toMatchObject({ statusCode: "0" });
+            });
+    });
+});

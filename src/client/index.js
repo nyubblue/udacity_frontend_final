@@ -1,13 +1,7 @@
-// import { checkForName } from './js/nameChecker'
-import { deleteTrip, handleSubmit } from './js/formHandler'
-import { init } from './js/init'
+import { addPlan, addPlanClick, deleteTrip, displayPopupForm, handleSubmit, init } from './js/app'
 
-// import './styles/resets.scss'
 import './styles/base.scss'
-// import './styles/footer.scss'
-// import './styles/form.scss'
-// import './styles/header.scss'
 
 export {
-    handleSubmit, init, deleteTrip
+    handleSubmit, init, deleteTrip, addPlan, addPlanClick, displayPopupForm
 }

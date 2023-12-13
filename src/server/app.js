@@ -5,8 +5,9 @@ const cors = require('cors')
 
 //configure env variables
 const dotenv = require('dotenv');
-const { GEONAMES_API_URL, PIXABAY_BASE_URL, WEATHER_BIT_API_BASE_URL } = require('./constants');
-const { callOpenApi, getDataFromPlace, getWeDataFromGeonames, getPixePhoto } = require('./func');
+const { GEONAMES_API_URL, PIXABAY_BASE_URL, WEATHER_BIT_API_BASE_URL } = require('./utils/constants');
+const { callOpenApi } = require('./utils/connection');
+const { getDataFromPlace, getWeDataFromGeonames, getPixePhoto } = require('./weatherService/func');
 dotenv.config();
 
 const WEATHER_BIT_API_KEY = process.env.WEATHER_BIT_API_KEY;
@@ -39,6 +40,7 @@ app.get('/getAllData', function (req, res) {
     }
 })
 
+/** api for search information of place, weather, images */
 app.post('/api', function (req, res) {
     const placeName = req.body.placeName;
     const tripDate = req.body.tripDate;
@@ -128,6 +130,34 @@ app.get('/deleteTrip', function (req, res) {
             dataList = dataList.filter((item) => {
                 return item.id != id;
             });
+            res.send({ code: 0, msg: "Deleting is successfully." });
+        } else {
+            res.send({ code: 9, msg: 'Trips list is empty' });
+        }
+    } catch (error) {
+        res.send({ code: 500, msg: 'internal error' });
+    }
+})
+
+//delete a element of trip item by id
+app.get('/addPlanDate', function (req, res) {
+    let id = req.query.id;
+    let endDate = decodeURIComponent(req.query.endDate);
+    try {
+        if (dataList.length != 0) {
+            let dataItem = dataList.find((item) => {
+                return item.id == id;
+            });
+
+            if (dataItem) {
+                dataItem.endDate = endDate;
+                res.send({ code: 0, msg: "Add Plan Date is successfully.", data: dataList });
+                return;
+            } else {
+                res.send({ code: 404, msg: 'Data is not existed.' });
+                return;
+            }
+
             res.send({ code: 0, msg: "Deleting is successfully." });
         } else {
             res.send({ code: 9, msg: 'Trips list is empty' });
